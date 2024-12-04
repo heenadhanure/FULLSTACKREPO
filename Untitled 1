@@ -1,0 +1,356 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="ISO-8859-1">
+<title>Register</title>
+</head>
+<body>
+	<form action="register" method="post">
+		UserName : <input type="text" name="uname" required autofocus><br><br>
+		Password : <input type="password" name="pword" required><br><br>
+		First Name : <input type="text" name="fname" required><br><br>
+		Last Name : <input type="text" name="lname" required><br><br>
+		Email : <input type="email" name="email" required><br><br>
+		Role : 	<select id="role" name="role"required>
+					<option value="" disabled selected>select</option>
+					<option value="project manager">Project Manager</option>
+					<option value="team lead">Team Lead</option>
+					<option value="developer">Developer</option>
+			   </select><br><br>
+		<input type="submit" value="Register">
+		<a href="login.html">Back</a>
+	</form>
+</body>
+</html>
+
+-->
+
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="ISO-8859-1">
+ <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registration - Project Management System</title>
+    <link rel="stylesheet" href="CSS/registerStyle.css">
+</head>
+<body>
+<div class="registration-form">
+<h3>User Registration</h3>
+<form id="registerForm" action="register" method="post" enctype="multipart/form-data">
+
+<table>
+    <tr class="form-group">
+      
+      <td><label for="uname">User Name : </label></td>
+      <td><input type="text" id="name" name="uname" required></td>
+      
+    </tr> 
+    
+      <tr class="form-group">
+      <td><label for="fname"> First Name :</label></td>
+      <td><input type="text" id="fname" name="fname" required></td>
+      </tr>
+   
+      <tr class="form-group">
+        <td><label for="lname">Last Name :</label></td>
+        <td><input type="text" id="lname" name="lname" required></td>
+    </tr>
+    
+    <tr class="form-group">
+        <td><label for="mail">User EmailId : </label></td>
+        <td><input type ="text" id="mail" name="mail" required></td>
+     
+    </tr >
+    <tr class="form-group">
+    <td><label for="role">Role</label></td>
+    
+    <td><select id="role" name="role" required>
+    				<option value="" disabled selected>Select</option>
+                    <option value="Project Manager">Project Manager</option>
+                    <option value="Team Lead">Team Lead</option>
+                    <option value="Developer">Developer</option>
+                </select> </td> 
+    </tr>
+    
+     <tr class="form-group">
+        
+       <td><label for="pass"> Enter  Password</label></td>
+      <td><input type="password" id="pass" name="pass" required></td>
+      </tr>
+      
+      <tr class="form-group"><td><small>Password must be 8-15 characters long and include 
+ at least one uppercase letter,one lowercase letter, one digit, 
+ and one special character.</small></td>
+      </tr>
+   
+    <tr class="form-group">
+    	 <td><label for="conPass"> Confirm Password </label></td>
+      <td><input type="password" id="conPass" name="conPass" required></td>
+      </tr>
+     
+     <tr class="form-group">
+     <td> <label for="phone">Phone Number</label></td>
+     <td> <input type="tel" id="phone" name="phone" required></td>
+     
+     </tr>
+ 
+      <tr>
+     <td><label for="setprofile">Choose picture to set</label></td>
+     <td> <input type="file" id="setprofile" name="setprofile" accept="image/*" ></td>
+     </tr>
+        <tr class="form-group"><td><button type="submit">Register</button></td>
+        <td><a href="login.html" style="height:50px;border:1px solid black;text-decoration: none;color:black;padding:2px;border-radius: 3px;">Login</a></td>
+        </tr>
+  </table>
+  
+  
+</form></div>
+</body>
+</html>
+
+
+
+
+package com.nit.controller.usercontroller;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.PrintWriter;
+
+import com.nit.DAO.userdao.RegisterDAO;
+import com.nit.beans.UserBean;
+
+import jakarta.servlet.RequestDispatcher;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.ServletResponse;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.Part;
+
+@SuppressWarnings("serial")
+@WebServlet("/register")
+public class RegisterServlet extends HttpServlet {
+	
+	@Override
+	protected void doPost(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
+		PrintWriter pw= res.getWriter();
+		RequestDispatcher rd;
+		res.setContentType("text/html");
+		UserBean ub = new UserBean();
+		ub.setUserName(req.getParameter("uname"));
+		ub.setFirstName(req.getParameter("fname"));
+		ub.setLastName(req.getParameter("lname"));
+		ub.setEmail(req.getParameter("mail"));
+		ub.setRole(req.getParameter("role"));
+		ub.setPassword(req.getParameter("pass"));
+		ub.setConfirmPassword(req.getParameter("conPass"));
+		System.out.println(ub.toString());
+        ub.setPhone(Long.parseLong(req.getParameter("phone")));		
+		/* Phone number handling
+		String phoneParam = req.getParameter("phone");
+		if (phoneParam != null && !phoneParam.trim().isEmpty()) {
+		    try {
+		        long phNo = Long.parseLong(phoneParam); // Parse String to long
+		        ub.setPhone(phNo); // Now set it in UserBean
+		    } catch (NumberFormatException e) {
+		        pw.println("<h2 style='color:red'>Invalid phone number format.</h2>");
+		        rd = req.getRequestDispatcher("register.html");
+		        rd.include(req, res);
+		        System.out.println("Userdefined Error");
+		        return;
+		    }
+		} else {
+		    pw.println("<h2 style='color:red'>Phone number is required.</h2>");
+		    rd = req.getRequestDispatcher("register.html");
+		    rd.include(req, res);
+		    return;
+		}	*/
+		
+		// Profile Image Handling
+	    InputStream setprofile = null;
+	    try {
+	        Part photoPart = ub.setProfileImage(req.getPart("setprofile"));
+	        if (photoPart != null) {
+	            setprofile = photoPart.getInputStream();
+	        }
+	    } catch (IOException | ServletException e) {
+	        e.printStackTrace();
+	        // Optionally, you can set a response message or redirect to an error page
+	        // resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error processing file upload");
+	    }    
+	    
+		// Registration Login
+		String result = RegisterDAO.register(ub);
+		
+		if(result.equals("SUCCESS")) {
+			req.setAttribute("msg", "<h2 style='color:green'>You have Registered Successfully....</h2>");
+			req.getRequestDispatcher("/JSP/Register.jsp").forward(req, res);
+		}else {
+			req.setAttribute("msg", "<h2 style='color:red'>Sorry, something went wrong during the registration process.\nPlease try again or <a href=\"register.html\">go back to the registration page\nIf the issue persists, contact support </h2>");
+			req.getRequestDispatcher("/JSP/Msg.jsp").forward(req, res);
+		}
+	}
+}
+
+
+package com.nit.beans;
+
+import java.io.InputStream;
+
+import jakarta.servlet.http.Part;
+
+public class UserBean {
+	
+	private String userName;
+    private String firstName;
+    private String lastName;
+    private String email;
+    private String role;
+    private String password;
+    private String confirmPassword;
+    private long phone;
+    private InputStream profileImage;
+    
+	public String getUserName() {
+		return userName;
+	}
+	public void setUserName(String userName) {
+		this.userName = userName;
+	}
+	public String getFirstName() {
+		return firstName;
+	}
+	public void setFirstName(String firstName) {
+		this.firstName = firstName;
+	}
+	public String getLastName() {
+		return lastName;
+	}
+	public void setLastName(String lastName) {
+		this.lastName = lastName;
+	}
+	public String getEmail() {
+		return email;
+	}
+	public void setEmail(String email) {
+		this.email = email;
+	}
+	public String getRole() {
+		return role;
+	}
+	public void setRole(String role) {
+		this.role = role;
+	}
+	public String getPassword() {
+		return password;
+	}
+	public void setPassword(String password) {
+		this.password = password;
+	}
+	public String getConfirmPassword() {
+		return confirmPassword;
+	}
+	public void setConfirmPassword(String confirmPassword) {
+		this.confirmPassword = confirmPassword;
+	}
+	public long getPhone() {
+		return phone;
+	}
+	public long setPhone(long l) {
+		return this.phone = l;
+	} 
+	public InputStream getProfileImage() {
+		return profileImage;
+	}
+	public Part setProfileImage(Part part) {
+		this.profileImage = (InputStream) part;
+		return part;
+	} 
+	
+	@Override
+	public String toString() {
+	    return "Manager{" +
+	            "userName='" + userName + '\'' +
+	            ", firstName='" + firstName + '\'' +
+	            ", lastName='" + lastName + '\'' +
+	            ", email='" + email + '\'' +
+	            ", role='" + role + '\'' +
+	            ", password='" + password + '\'' +
+	            ", confirmPassword='" + confirmPassword + '\'' +
+	        //    ", phone=" + phone +
+	            '}';
+	     
+	}	
+}
+
+
+package com.nit.DAO.userdao;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+
+import com.nit.beans.UserBean;
+import com.nit.utils.DBConnection;
+
+public class RegisterDAO {
+	static int k = 0;
+	static String result = null;
+	public static String register(UserBean ub) {
+
+		try {
+			Connection con = DBConnection.getCon();
+			PreparedStatement ps = con.prepareStatement("insert into users values(?,?,?,?,?,?,?,?,?)");
+			
+			ps.setString(1, ub.getUserName());
+			ps.setString(2, ub.getFirstName());
+			ps.setString(3, ub.getLastName());
+			ps.setString(4, ub.getEmail());
+			ps.setString(5, ub.getRole());
+			ps.setString(6, ub.getPassword());
+			ps.setString(7, ub.getConfirmPassword());
+			ps.setLong(8, ub.getPhone());
+			ps.setBlob(9, ub.getProfileImage());
+			
+			k = ps.executeUpdate();
+			System.out.println(k);
+			if(k<=0)
+				result = "ERROR";
+			else
+				result = "SUCCESS";
+
+		} catch (SQLException e) {
+			System.out.println("user table not inserted pls check register method");
+			e.printStackTrace();
+		}		
+	
+		
+		return result;
+	}
+}
+
+
+<%@ page language="java" contentType="text/html; charset=ISO-8859-1"
+    pageEncoding="ISO-8859-1"%>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="ISO-8859-1">
+<title>Register</title>
+</head>
+<body>
+	<%
+		String msg = (String)request.getAttribute("msg");
+		out.println(msg);
+	%>
+	<form action="login" method="post">
+		UserName : <input type="text" name="uname"><br><br>
+		Password : <input type="password" name="pword"><br><br>
+		<input type="submit" value="Login">
+		<a href="register.html">New User?</a>
+	</form>
+</body>
+</html>
